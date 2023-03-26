@@ -1,4 +1,5 @@
 #include<iostream>
+#include<algorithm>
 #define MAX_LOG_M 31
 #define MAX_K 100001
 
@@ -18,34 +19,27 @@ void videos(int K, int M, int S[]) {
     for (int i = 0; i < K; i++){
         int curr = i;
         for (int j = MAX_LOG_M; 0 <= j; --j){
-            if (M & (1<<j)){curr = sparse_table[j][curr];}
+            if (M & (1<<j)){
+                curr = sparse_table[j][curr];
+            }
         }
         answer[i] = curr;
+        cout<<"answer"<<i<<"="<<curr<<endl;
     }
 }
 
 
 int clip(int I){
+    // int *ind;
+    // ind = find(sparse_table[0], sparse_table[0]+MAX_K, I);
+    //answer[ind-sparse_table[0]];
     return answer[I];
 }
 
 int main(void){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int m,k,s[100000];
-    cin>>k>>m;
-    for (int i = 0; i < 100001; i++){
-        int tmp;
-        cin>>tmp;
-        s[i] = tmp;
-    }
-    videos(k, m, s);
-    int t;
-    cin>>t;
-    for (int i = 0; i < t; i++){
-        int ab;
-        cin>>ab;
-        ab=clip(ab);
-        cout<<ab;
-    }
+    int arr[4] = {3, 2, 1, 0};
+    videos(4, 2, arr);
+    cout<<clip(3)<<clip(1);
     return 0;
 }
