@@ -4,7 +4,7 @@
 #define INF 1000000000
 using namespace std;
 int graph[1001][1001];
-int dp[18];
+int dp[18][1<<18];
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 
