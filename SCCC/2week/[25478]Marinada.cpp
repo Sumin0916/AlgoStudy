@@ -2,7 +2,7 @@
 #include<queue>
 #include<tuple>
 #include<memory.h>
-
+//---> island travel
 #define INF 1000000000
 using namespace std;
 int graph[1001][1001];
@@ -20,7 +20,7 @@ int main(void){
     cin>>N>>M>>K;
     for (int i = 0; i < N; i++){
         for (int j = 0; j < M; j++){
-            cin>>data;
+            cin>>data;   
             if (data == '#'){graph[i][j] = -1;}
             else if (data == '.'){graph[i][j] = 0;}
             else if (data == 'U'){start_point.first=i;start_point.second=j;}
