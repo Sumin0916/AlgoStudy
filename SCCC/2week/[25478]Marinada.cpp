@@ -1,65 +1,80 @@
 #include<iostream>
+#include<vector>
 #include<queue>
-#include<tuple>
 #include<memory.h>
-//---> island travel
-#define INF 1000000000
+#include<tuple>
+#define INF 987654321
+
 using namespace std;
-int graph[1001][1001];
+vector<tuple<int, int, int>> node;
+int len_table[18][18];
+char graph[1001][1001];
 bool visited[1001][1001] = {false, };
-bool dp[17][1<<17] = {false, };
+int dp[18][1<<18];
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
-int res = INF;
+int N, M, K;
+
+int find_len(pair<int, int> start, pair<int, int> end){
+    memset(visited, false, sizeof(visited));
+    int end_row = end.first; int end_col = end.second;
+    queue<tuple<pair<int, int>, int>> Q;
+    Q.push(make_tuple(start, 0));
+    while(!Q.empty()){
+        tuple<pair<int, int>, int> node = Q.front(); Q.pop();
+        int row = get<0>(node).first; int col = get<0>(node).second; int dis = get<1>(node);
+
+        if (row == end_row && col == end_col){return dis;}
+
+        for (int i = 0; i < 4; i++){
+            int nrow = row + dx[i];
+            int ncol = col + dy[i];
+
+            if (nrow < 0 || nrow >= N || ncol < 0 || ncol >= M){continue;}
+            int step = graph[nrow][ncol];
+
+            if (step == '#'){continue;}
+            if (visited[nrow][ncol]){continue;}
+
+            visited[nrow][ncol] = true;
+            Q.push(make_tuple(make_pair(nrow, ncol), dis+1));
+        }
+    }
+    return INF;
+}
 
 int main(void){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int N, M, K, cnt=1;
-    pair<int, int> end_point, start_point;
-    char data;
     cin>>N>>M>>K;
+    memset(len_table, INF, sizeof(len_table));
+    int cnt = 1;
     for (int i = 0; i < N; i++){
         for (int j = 0; j < M; j++){
-            cin>>data;   
-            if (data == '#'){graph[i][j] = -1;}
-            else if (data == '.'){graph[i][j] = 0;}
-            else if (data == 'U'){start_point.first=i;start_point.second=j;}
-            else if (data == 'I'){graph[i][j] = 0; end_point.first=i;end_point.second=j;}
-            else if (data == 'N'){graph[i][j] = cnt; cnt++;}
-        }
-    }
-    queue<tuple<int, int, int, int, int>> Q;
-    Q.push(make_tuple(start_point.first, start_point.second, 0, 0, 0));
-    int now_row, now_col, depth, get_info, get_count;
-    while (!Q.empty()){
-        tuple<int, int, int, int, int> curr = Q.front(); Q.pop();
-        now_row = get<0>(curr); now_col = get<1>(curr); get_info = get<2>(curr); get_count = get<3>(curr); depth = get<4>(curr);
-        cout<<'('<<now_row<<", "<<now_col<<") :"<<graph[now_row][now_col]<<"get_count: "<<get_count<<endl;
-        if (now_row == end_point.first && now_col == end_point.second && get_count == K){
-            res = min(res, depth);
-            continue;
-        }
-        for (int i = 0; i < 4; i++){
-            int next_row = now_row + dx[i];
-            int next_col = now_col + dy[i];
-            int next_get_count = get_count;
-            int next_stat = graph[next_row][next_col];
-            int next_get_info = get_info;
-            if (next_col < 0 || next_col > M-1 || next_row < 0 || next_row > N-1){continue;}
-            if (next_stat == -1){continue;}
-            else if (next_stat != 0){
-                if (!(next_get_info & (1<<next_stat))){
-                    next_get_info |= (1<<next_stat);
-                    next_get_count += 1;
-                }
-                if (dp[next_stat][get_info]){continue;}
-                dp[next_stat][get_info] = true;
+            char tp;
+            cin>>tp;
+            graph[i][j] = tp;
+            if (tp == 'N'){
+                node.push_back(make_tuple(i, j, cnt));
+                cnt++;
             }
-            if (visited[next_row][next_col]){continue;}
-            visited[next_row][next_col] = true;
-            Q.push(make_tuple(next_row, next_col, next_get_info, next_get_count, depth+1));
+            else if(tp == 'I'){
+                node.push_back(make_tuple(i, j, 17));
+            }
+            else if (tp == 'U'){
+                node.push_back(make_tuple(i, j, 0));
+            }
         }
     }
-    cout<<res;
+
+    for (int i = 0; i < node.size(); i++){
+        for (int j = i+1; j < node.size(); j++){
+            tuple<int, int, int> start_info = node[i]; tuple<int, int, int> end_info = node[j];
+            int s_num = get<2>(start_info); int e_num = get<2>(end_info);
+            pair<int, int> s_pair = make_pair(get<0>(start_info), get<1>(start_info));
+            pair<int, int> e_pair = make_pair(get<0>(end_info), get<1>(end_info));
+            len_table[s_num][e_num] = find_len(s_pair, e_pair);
+            len_table[e_num][s_num] = len_table[s_num][e_num];
+        }
+    }
     return 0;
 }

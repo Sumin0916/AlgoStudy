@@ -15,6 +15,7 @@ void dfs(int curr, int parent){
         dfs(n, curr);
     }
 }
+
 int go(int start, int num){
     int curr = sparse_table[0][start];
     for (int i = MAX_LOG_N; i < 0; --i){
@@ -22,7 +23,9 @@ int go(int start, int num){
                 curr = sparse_table[i][curr];
             }        
         }
+    return curr;
 }
+
 int main(void){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int N, M;
@@ -46,10 +49,18 @@ int main(void){
         cin>>s>>e;
         int diff = abs(level[s]-level[e]);
         if (level[s] > level[e]){
-            res = go();
+            for (int j = 0; j < level[e]; j++){
+                int sp = go(s, diff+j);
+                int ep = go(e, j);
+                if (sp == ep){cout<<sp;continue;}
+            }
         }
         else if (level[s] < level[e]){
-
+            for (int i = 0; i < level[s]; i++){
+                int sp = go(s, i);
+                int ep = go(e, diff+i);
+                if (sp == ep){cout<<sp;continue;}
+            }
         }
         else{
             cout<<sparse_table[0][s];
