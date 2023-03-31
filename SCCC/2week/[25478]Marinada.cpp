@@ -3,17 +3,19 @@
 #include<queue>
 #include<memory.h>
 #include<tuple>
-#define INF 987654321
+#define INF 1000000
 
 using namespace std;
 vector<tuple<int, int, int>> node;
-int len_table[18][18];
+
 char graph[1001][1001];
 bool visited[1001][1001] = {false, };
-int dp[18][1<<18];
+int len_table[19][19];
+int dp[19][1<<19];
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 int N, M, K;
+int end_visited = 0;
 
 int find_len(pair<int, int> start, pair<int, int> end){
     memset(visited, false, sizeof(visited));
@@ -43,11 +45,26 @@ int find_len(pair<int, int> start, pair<int, int> end){
     return INF;
 }
 
+int TSP(int node, int visited){
+    int &weight = dp[node][visited];
+    if (weight != -1){return weight;}
+    if (visited == end_visited){
+        return len_table[node][18];
+    }
+    weight = INF;
+    for (int i = 1; i < 19; i++){
+        if (len_table[node][i] == INF || visited & (1<<i)){continue;}
+        weight = min(weight, TSP(i, visited | (1<<i)) + len_table[node][i]);
+    }
+    return weight;
+}
+
 int main(void){
+    for (int i = 0; i < 19; i++){for (int j = 0; j < 19; j++){len_table[i][j] = INF;}}
+    memset(dp, -1, sizeof(dp));
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin>>N>>M>>K;
-    memset(len_table, INF, sizeof(len_table));
-    int cnt = 1;
+    int cnt = 2;
     for (int i = 0; i < N; i++){
         for (int j = 0; j < M; j++){
             char tp;
@@ -55,17 +72,18 @@ int main(void){
             graph[i][j] = tp;
             if (tp == 'N'){
                 node.push_back(make_tuple(i, j, cnt));
+                end_visited |= (1<<cnt);
                 cnt++;
             }
             else if(tp == 'I'){
-                node.push_back(make_tuple(i, j, 17));
+                node.push_back(make_tuple(i, j, 18));
             }
             else if (tp == 'U'){
-                node.push_back(make_tuple(i, j, 0));
+                node.push_back(make_tuple(i, j, 1));
+                end_visited |= (1<<1);
             }
         }
     }
-
     for (int i = 0; i < node.size(); i++){
         for (int j = i+1; j < node.size(); j++){
             tuple<int, int, int> start_info = node[i]; tuple<int, int, int> end_info = node[j];
@@ -76,5 +94,6 @@ int main(void){
             len_table[e_num][s_num] = len_table[s_num][e_num];
         }
     }
+    cout<<TSP(1, (1<<1));
     return 0;
 }
