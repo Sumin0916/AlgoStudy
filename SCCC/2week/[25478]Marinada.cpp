@@ -9,7 +9,6 @@ using namespace std;
 vector<tuple<int, int, int>> node;
 
 char graph[1001][1001];
-bool visited[1001][1001] = {false, };
 int len_table[19][19];
 int dp[19][1<<19];
 int dx[4] = {1, 0, -1, 0};
@@ -18,7 +17,7 @@ int N, M, K;
 int end_visited = 0;
 
 int find_len(pair<int, int> start, pair<int, int> end){
-    memset(visited, false, sizeof(visited));
+    bool visited[1001][1001] = {false, };
     int end_row = end.first; int end_col = end.second;
     queue<tuple<pair<int, int>, int>> Q;
     Q.push(make_tuple(start, 0));
