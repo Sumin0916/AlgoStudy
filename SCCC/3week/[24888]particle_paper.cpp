@@ -1,39 +1,21 @@
 #include<iostream>
 #include<vector>
 #include<queue>
-#include<algorithm>
+#include<stack>
 
 using namespace std;
 
-const int INF = 987654321;
+const int INF = 999999999999999;
 const int MAX_N = 200001;
-typedef pair<int, int> p;
+
+
+typedef pair<long long, int> p;
 long long dist[MAX_N];
 int note_num = 0;
 vector<p> adj[MAX_N];
-vector<int> res;
 vector<int> n_count(MAX_N, 0);
 int note[MAX_N];
-
-void res_bt(int node, int pre){
-    if (node == 1){
-        cout<<note_num<<'\n';
-        for (int i = res.size()-1; i > -1; i--){
-        cout<<res[i]<<" ";
-    }
-        exit(0);
-    }
-
-    for (p &a : adj[node]){
-        int n = a.first; int d = a.second;
-        if (pre == n){continue;}
-        if (dist[node] != dist[n]+d){continue;}
-        if (n_count[node] != n_count[n]+note[node]){continue;}
-        res.push_back(n);
-        res_bt(n, node);
-        res.pop_back();
-    }
-}
+int prev_node[MAX_N];
 
 int main(void){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
@@ -47,13 +29,14 @@ int main(void){
     }
     fill(dist, dist+MAX_N, INF);
     dist[1] = 0;
-    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> PQ;
+    priority_queue<p, vector<p>, greater<p>> PQ;
     PQ.push(p(0, 1));
     for (int i = 1; i < N+1; i++){
         cin>>note[i];
         note_num += note[i];
     }
     n_count[1] = note[1];
+    prev_node[1] = 1;
     while (!PQ.empty()){
         int curr = PQ.top().second;
         long long cost = PQ.top().first;
@@ -62,17 +45,28 @@ int main(void){
         for (p &a:adj[curr]){
             int next = a.first;
             long long next_cost = cost + a.second;
-            if (dist[next] > next_cost){
-                n_count[next] = max(n_count[next], n_count[curr]+note[next]);
+            if (dist[next] >= next_cost){
                 dist[next] = next_cost;
                 PQ.push(p(dist[next], next));
+                if (n_count[next] <= n_count[curr] + note[next]){
+                    n_count[next] = n_count[curr] + note[next];
+                    prev_node[next] = curr;
+                }
             }
-            else if (dist[next] == next_cost){n_count[next] = max(n_count[next], n_count[curr]+note[next]);}
         }
     }
-
     if (note_num != n_count[N]){cout<<-1;return 0;}
-    res.push_back(N);
-    res_bt(N, 0);
+    stack<int> root;
+    int a = N;
+    root.push(a);
+    while(prev_node[a] != a){
+        a = prev_node[a];
+        root.push(a);
+    }
+    cout<<note_num<<'\n';
+    while(!root.empty()){
+        cout<<root.top()<<" ";
+        root.pop();
+    }
     return 0;
 }
