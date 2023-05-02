@@ -10,7 +10,7 @@ ll blk[101010] = {0,};
 ll add[101010] = {0,};
 
 void init(){
-    sq = sqrt(n);
+    sq = 2;
     for (int i = 1; i <= n; i++) {
         int bid = i/sq;
         blk[bid] += array[i];
@@ -22,9 +22,10 @@ void update(int l, int r, ll val) {
         array[i] += val;
         add[i/sq] += val;
     }
-    for (int i = 0; i <= sq; i++){
-        blk[i] += add[i];
-        add[i] = 0;
+    blk[101010] = {0,};
+    for (int i = 1; i <= n; i++) {
+        int bid = i/sq;
+        blk[bid] += array[i];
     }
 }
 
@@ -39,6 +40,13 @@ ll query(int l, int r){
     return res;
 }
 
+void pary(int l, int r, ll *arr){
+    for (int i = l; i <= r; i++){
+        cout << arr[i] << ' ';
+    }
+    cout << '\n';
+}
+
 int main(void){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> n >> m >> k;
@@ -51,6 +59,8 @@ int main(void){
         if (a==1){
             cin >> b >> c >> d;
             update(b, c, d);
+            pary(1, n, array);
+            pary(0, sq, blk);
         }
         else{
             cin >> b >> c;
