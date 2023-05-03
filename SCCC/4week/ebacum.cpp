@@ -9,7 +9,7 @@ ll array[10101010];
 ll blk[10101] = {0,};
 
 void init(){
-    sq = 2;
+    sq = sqrt(n);
     for (int i = 1; i <= n; i++) {
         int bid = i/sq;
         blk[bid] += array[i];
@@ -50,7 +50,7 @@ int main(void){
     init();
     for (int i = 0; i < m+k; i++){
         int a, b, c, d; cin >> a;
-        if (a==1){
+        if (a==2){
             cin >> b >> c >> d;
             update(b, c, d);
             //pary(1, n, array);
