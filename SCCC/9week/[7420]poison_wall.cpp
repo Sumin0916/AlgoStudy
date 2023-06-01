@@ -15,9 +15,10 @@ int ccw(p &p1, p &p2, p &p3) {
     return (res > 0) - (res < 0);
 }
 
-ll dist(p &p1, p &p2) {
-    ll dx = p1.x - p2.x; ll dy = p1.y - p2.y;
-    return sqrt(dx*dx + dy*dy);
+ll findTheta(p &p1, p &p2) {
+    int product = (p1.x*p2.y) - (p1.y*p2.x);
+    ll sine = product / (sqrt(p1.x*p1.x+p1.y*p1.y)*sqrt(p2.x*p2.x+p2.y*p2.y));
+    return asin(sine);
 }
 
 int main() {
@@ -39,5 +40,13 @@ int main() {
         while (r.size() >= 2 && ccw(r[r.size()-2], r.back(), i) <= 0) r.pop_back();
         r.push_back(i);
     }
-    for (auto i : r) cout << i.x << ' ' << i.y << '\n';
+    r.push_back(r[0]);
+    for (int i = 1; i < r.size(); i++) {
+        p p1 = r[i-1]; p p2 = r[i];
+        cout << findTheta(p1, p2) << '\n';
+        if (((p1.x*p2.y) - (p1.y*p2.x)) != 0) res += abs(findTheta(p1, p2))*L;
+        else res += L;
+    };
+
+    cout << res;
 }
