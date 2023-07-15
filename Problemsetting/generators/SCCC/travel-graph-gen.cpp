@@ -1,4 +1,5 @@
 #include "testlib.h"
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -8,29 +9,29 @@ int main(int argc, char *argv[]) {
 
     int n = opt<int>("n");
     int m = opt<int>("m");
-    int s = rnd.next(n) + 1;
-    vector<int> p(n);
-    for (int i = 1; i < n; i++)
-        p[i] = rnd.wnext(i, n);
-
-    vector<int> perm = rnd.perm(n);
+    int s = rnd.next(1, n);
+    vector<int> p(n+1);
+    for (int i = 1; i < n; i++){
+        p[i] = rnd.next(i+1, n);
+    }
+    p[n] = rnd.next(1, n-1);
 
     vector<pair<int, int>> edges;
     vector<int> A;
     for (int i = 1; i <= n; i++) A.push_back(i);
 
     for (int i = 1; i < n; i++)
-        if (perm[i] < perm[p[i]])
-            edges.push_back(make_pair(perm[i], perm[p[i]]));
-        else if (perm[i] > perm[p[i]])
-            edges.push_back(make_pair(perm[p[i]], perm[i]));
+        if (i < p[i])
+            edges.push_back(make_pair(i, p[i]));
+        else
+            edges.push_back(make_pair(p[i], i));
 
     for (int j = n-1; j < m; j++) {
-        int i = rnd.next(n);
-        if (perm[i] < perm[p[i]])
-            edges.push_back(make_pair(perm[i], perm[p[i]]));
-        else if (perm[i] > perm[p[i]])
-            edges.push_back(make_pair(perm[p[i]], perm[i]));
+        int i = rnd.next(1, n);
+        if (i < p[i])
+            edges.push_back(make_pair(i, p[i]));
+        else
+            edges.push_back(make_pair(p[i], i));
     }
 
     shuffle(edges.begin(), edges.end());
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]) {
 
     cout << n << ' ' << m << ' ' << s << endl;
     for (auto edge: edges)
-        cout << (edge.first + 1) << ' ' << (edge.second + 1) << ' ' << rnd.next(1, 5000) << endl;
+        cout << (edge.first) << ' ' << (edge.second) << ' ' << rnd.next(1, 5000) << endl;
     for (int i = 0; i < n-1; i++) {cout << A[i] << ' ';}
     cout << A[n-1] << endl;
 }
