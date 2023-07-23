@@ -19,12 +19,12 @@ bool Cross(Point a, Point b, Point c, Point d){
     if(ab==0 && cd == 0){
         if(a>b) swap(a, b);
         if(c>d) swap(c, d);
-        return !(b <= c || d <= a);
+        return !(b <= c || d <= a || ((a==c) && (b!=d)) || ((a!=c) && (b==d)));
     }
     return ab <= 0 && cd <= 0;
 }
 
-void check(InStream &in, int tp) {
+void check(InStream &in) {
     vector<Point> pset;
     int pary[80][80]={0, };
     int dary[3'001][3'001]={0, };
@@ -49,24 +49,23 @@ void check(InStream &in, int tp) {
                 dary[i][j]=dary[j][i]=0;
                 Point p1, p2, p3, p4;
                 p1 = pset[edges[i-1].x-1]; p2 = pset[edges[i-1].y-1]; p3 = pset[edges[j-1].x-1]; p4 = pset[edges[j-1].y-1];
-                in.quitif(Cross(p1, p2, p3, p4), _wa, "%d-%d X %d-%d || {%d, %d}, {%d, %d} X {%d, %d}, {%d, %d}",edges[i-1].x, edges[i-1].y, edges[j-1].x, edges[j-1].y, p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
+                in.quitif(Cross(p1, p2, p3, p4), _wa, "%d-%d X %d-%d",edges[i-1].x, edges[i-1].y, edges[j-1].x, edges[j-1].y);
             }
         }
     }
-    
     return;
 }
 
 int main(int argc, char* argv[]) {
     setName("Test Checker");
     registerTestlibCmd(argc, argv);
-    vector<vector<int> > E;
+
     N = inf.readInt(3, 3'000, "N");
     M = inf.readInt(0, 3*N-6,"M");
     K = inf.readInt(0, 2*N, "K");
 
-    check(ans, 0);
-    check(ouf, 1);
+    check(ans);
+    check(ouf);
     quitf(_ok, "");
     return 0;
 }
