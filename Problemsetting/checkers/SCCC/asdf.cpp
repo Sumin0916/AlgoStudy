@@ -17,7 +17,7 @@ bool Cross(Point a, Point b, Point c, Point d){
     if(ab==0 && cd == 0){
         if(a>b) swap(a, b);
         if(c>d) swap(c, d);
-        return !(b <= c || d <= a);
+        return !(b <= c || d <= a || !(a==c && b==d));
     }
     return ab <= 0 && cd <= 0;
 }
@@ -25,6 +25,6 @@ bool Cross(Point a, Point b, Point c, Point d){
 int main(){
     Point p1, p2, p3, p4;
     p1.x=1;p1.y=1;p2.x=79;p2.y=2;p3.x=1;p3.y=79;p4.x=2;p4.y=2;
-    cout << Cross(p1, p2, p3, p4);
+    cout << Cross(p1, p2, p1, p3);
     return 0;
 }
