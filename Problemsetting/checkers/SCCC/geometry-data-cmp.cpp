@@ -27,8 +27,9 @@ bool Cross(Point a, Point b, Point c, Point d){
 void check(InStream &in) {
     vector<Point> pset;
     int pary[80][80]={0, };
-    int dary[3'001][3'001]={0, };
+    vector<int> dary[N+1];
     vector<Point> edges;
+    pset.emplace_back(0, 0);
 
     for(int i = N;i;i--) {
         int u = in.readInt(1, 79, "u"); int v = in.readInt(1, 79, "v");
@@ -39,20 +40,18 @@ void check(InStream &in) {
     for (int i = M;i;i--) {
         int u = in.readInt(1, N, "u"); int v = in.readInt(1, N, "v");
         in.quitif(u==v, _wa, "u==v? %d %d", u, v);
-        in.quitif(dary[u][v]||dary[v][u], _wa, "{%d <-> %d} is already exist", u, v); dary[u][v]=dary[v][u]=1;
+        in.quitif(find(dary[u].begin(), dary[u].end(), v) != dary[u].end(), _wa, "{%d <-> %d} is already exist", u, v);
+        dary[u].emplace_back(v);dary[v].emplace_back(u);
         edges.emplace_back(u, v);
     }
 
-    for(int i = 1; i <= M; i++) {
-        for(int j = i+1; j <= M; j++) {
-            if(dary[i][j]&&dary[j][i]) {
-                dary[i][j]=dary[j][i]=0;
-                Point p1, p2, p3, p4;
-                p1 = pset[edges[i-1].x-1]; p2 = pset[edges[i-1].y-1]; p3 = pset[edges[j-1].x-1]; p4 = pset[edges[j-1].y-1];
-                in.quitif(Cross(p1, p2, p3, p4), _wa, "%d-%d X %d-%d",edges[i-1].x, edges[i-1].y, edges[j-1].x, edges[j-1].y);
+    for(int i = 0; i < M; i++) {
+        for(int j = i+1; j < M; j++) {
+            Point p1, p2, p3, p4;
+            p1 = pset[edges[i].x]; p2 = pset[edges[i].y]; p3 = pset[edges[j].x]; p4 = pset[edges[j].y];
+            in.quitif(Cross(p1, p2, p3, p4), _wa, "%d-%d X %d-%d",edges[i].x, edges[i].y, edges[j].x, edges[j].y);
             }
         }
-    }
     return;
 }
 
