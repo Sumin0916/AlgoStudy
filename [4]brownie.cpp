@@ -2,23 +2,20 @@
 #include<bits/stdc++.h>
 
 using namespace std;
+using pp= tuple<int, int, int>;
+int H, W, num;
 
 int cuttingBrownie() {
 
 }
 
 int main(){
-    int h, w, price, num;
-    cin >> h >> w;
+    cin >> H >> W;
     cin >> num;
-    vector<vector<int>> pieces;
-    for(int i=0; i<num; ++i){
-        vector<int> piece;
-        cin >> h >> w >> price;
-        piece.push_back(h);
-        piece.push_back(w);
-        piece.push_back(price);
-        pieces.push_back(piece);
+    vector<pp> pieces;
+    for(int i=0,a,b,c; i<num; ++i){
+        cin >> a >> b >> c;
+        pieces.emplace_back(a, b, c);
     }
     cout << cuttingBrownie() << endl;
     return 0;
