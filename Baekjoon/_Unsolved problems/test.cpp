@@ -1,15 +1,17 @@
 #include <iostream>
 
 using namespace std;
-int res=0;
+
+int res[30] = {0, };
+
 int main(void){
     int t;
-    ios::sync_with_stdio(0); cin.tie(0);
-    for (int i = 0; i < 5; i++){
-        cin>>t;
-        if(t>=40){res+=t;}
-        else{res+=40;}
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    for (int i = 0; i < 28; i++){
+        int a; cin >> a; res[a-1] = 1;
     }
-    cout<<res/5;
+    for (int i = 0; i < 30; i++) {
+        if(res[i] == 0){cout << i+1 << '\n';}
+    }
     return  0;
 }
