@@ -6,7 +6,7 @@ int N, M, sq;
 vector<vector<int>> blk;
 
 void init(){
-    sq = sqrt(N);
+    sq = 1500;
     blk.resize(sq+10);
     for(int i=1;i<=N;i++){
         cin >> arr[i];
@@ -42,7 +42,7 @@ main(){
     while(M--){
         int op, a, b, c;
         cin >> op >> a >> b;
-        if(op == 1){
+        if(op == 2){
             cin >> c;
             query(a, b, c);
         }
